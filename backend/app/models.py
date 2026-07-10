@@ -29,5 +29,5 @@ class Resource(Base):
     name = Column(String)
     website = Column(String)
     url = Column(String)
-
+    Confidence_rate = Column(Integer , default=3)
     collection = relationship("Collection", back_populates="resources")

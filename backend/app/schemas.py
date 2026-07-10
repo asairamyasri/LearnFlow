@@ -21,6 +21,7 @@ class ResourceCreate(BaseModel):
     name: str
     website: str
     url: str
+    Confidence_rate: int = 3
 
 
 class ResourceResponse(ResourceCreate):

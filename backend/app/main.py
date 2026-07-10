@@ -118,6 +118,7 @@ def add_resource(
         name=resource.name,
         website=resource.website,
         url=resource.url,
+        Confidence_rate=resource.Confidence_rate,
     )
 
     db.add(new_resource)
@@ -146,6 +147,7 @@ def update_resource(
     existing_resource.name = resource.name
     existing_resource.website = resource.website
     existing_resource.url = resource.url
+    existing_resource.confidence = resource.confidence
 
     db.commit()
     db.refresh(existing_resource)
