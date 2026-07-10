@@ -7,6 +7,7 @@ type Resource = {
     name: string;
     website: string;
     url: string;
+    Confidence_rate: number;
 };
 
 function CollectionPage() {
@@ -17,7 +18,7 @@ function CollectionPage() {
     const [resourceName, setResourceName] = useState("");
     const [websiteName, setWebsiteName] = useState("");
     const [url, setUrl] = useState("");
-
+    const [confidence, setConfidence] = useState(3);
     const [resources, setResources] = useState<Resource[]>([]);
     const [collectionName, setCollectionName] = useState("");
     const [editingId, setEditingId] = useState<number | null>(null);
@@ -52,6 +53,7 @@ function CollectionPage() {
                     name: resourceName,
                     website: websiteName,
                     url: url,
+                    Confidence_rate: confidence,
                 }),
             });
         } else {
@@ -67,6 +69,7 @@ function CollectionPage() {
                         name: resourceName,
                         website: websiteName,
                         url: url,
+                        Confidence_rate: confidence,
                     }),
                 }
             );
@@ -77,7 +80,7 @@ function CollectionPage() {
         setResourceName("");
         setWebsiteName("");
         setUrl("");
-
+        setConfidence(3);
         setShowForm(false);
 
         loadResources();
@@ -98,6 +101,7 @@ function CollectionPage() {
         setResourceName(resource.name);
         setWebsiteName(resource.website);
         setUrl(resource.url);
+        setConfidence(resource.Confidence_rate);
 
         setEditingId(resource.id);
 
@@ -163,6 +167,17 @@ function CollectionPage() {
                         }
                     />
 
+
+                    <select
+                        value={confidence}
+                        onChange={(e) => setConfidence(Number(e.target.value))}
+                    >
+                        <option value={1}>⭐</option>
+                        <option value={2}>⭐⭐</option>
+                        <option value={3}>⭐⭐⭐</option>
+                    </select>
+
+
                     <button
                         className="save-btn"
                         onClick={handleSave}
@@ -189,6 +204,10 @@ function CollectionPage() {
                             <span className="website-badge">
                                 {resource.website}
                             </span>
+
+                            <p>
+                                {"⭐".repeat(resource.Confidence_rate)}
+                            </p>
 
                         </div>
 
