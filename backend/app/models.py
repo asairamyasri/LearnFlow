@@ -1,0 +1,33 @@
+from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
+from database import Base
+
+
+class Collection(Base):
+    __tablename__ = "collections"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True, index=True)
+
+    resources = relationship(
+        "Resource",
+        back_populates="collection",
+        cascade="all, delete-orphan"
+    )
+
+
+class Resource(Base):
+    __tablename__ = "resources"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    collection_id = Column(
+        Integer,
+        ForeignKey("collections.id", ondelete="CASCADE")
+    )
+
+    name = Column(String)
+    website = Column(String)
+    url = Column(String)
+
+    collection = relationship("Collection", back_populates="resources")

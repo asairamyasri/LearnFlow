@@ -1,0 +1,207 @@
+/* ================= Page ================= */
+
+.collection-page {
+    min-height: 100vh;
+    background: #f6f8fc;
+    padding: 50px 70px;
+}
+
+.back-btn {
+    background: transparent;
+    border: none;
+    color: #6d5cff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 25px;
+    transition: .25s;
+}
+
+.back-btn:hover {
+    color: #5547e6;
+}
+
+/* ================= Header ================= */
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.page-header h1 {
+    font-size: 46px;
+    margin-bottom: 8px;
+    color: #111827;
+}
+
+.page-header p {
+    color: #6b7280;
+    font-size: 17px;
+}
+
+/* ================= Buttons ================= */
+
+.add-btn,
+.save-btn {
+    background: #6d5cff;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 15px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.add-btn:hover,
+.save-btn:hover {
+    background: #5a4be6;
+    transform: translateY(-2px);
+}
+
+/* ================= Form ================= */
+
+.resource-form {
+    background: white;
+    border-radius: 22px;
+    padding: 30px;
+    margin-bottom: 35px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .06);
+
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.resource-form h2 {
+    margin-bottom: 5px;
+    color: #111827;
+}
+
+.resource-form input {
+    padding: 15px;
+    border-radius: 14px;
+    border: 1px solid #dbe2ea;
+    font-size: 15px;
+}
+
+.resource-form input:focus {
+    border-color: #6d5cff;
+    outline: none;
+}
+
+/* ================= Cards ================= */
+
+.resources-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.resource-card {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    border-left: 6px solid #6d5cff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .06);
+    transition: .25s;
+}
+
+.resource-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, .08);
+}
+
+.resource-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.resource-top h3 {
+    font-size: 24px;
+    color: #111827;
+}
+
+/* ================= Badge ================= */
+
+.website-badge {
+    background: #f2efff;
+    color: #6d5cff;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ================= URL ================= */
+
+.resource-link {
+    display: block;
+    margin: 18px 0;
+    color: #64748b;
+    text-decoration: none;
+    word-break: break-all;
+}
+
+.resource-link:hover {
+    color: #6d5cff;
+}
+
+/* ================= Bottom ================= */
+
+.resource-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.open-btn {
+    background: #6d5cff;
+    color: white;
+    text-decoration: none;
+    padding: 10px 22px;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: .25s;
+}
+
+.open-btn:hover {
+    background: #5a4be6;
+}
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.delete-btn {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #fff5f5;
+    color: #ef4444;
+
+    border: none;
+    border-radius: 12px;
+
+    cursor: pointer;
+    transition: .25s;
+}
+
+.delete-btn:hover {
+    background: #ef4444;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #ef4444;
+    color: white;
+}
