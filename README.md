@@ -13,14 +13,14 @@ The project is currently under active development, with features being added inc
 - 🗑️ Delete resources
 - 🔗 Store resource URLs
 - 📱 Responsive user interface
-
+- ⭐ Confidence rating (1–3 stars)
+- 📅 Automatic revision scheduler
+- 📊 Dashboard with today's revisions
 ---
 
 ## 🚧 Upcoming Features
 
-- ⭐ Confidence rating (1–3 stars)
-- 📅 Automatic revision scheduler
-- 📊 Dashboard with today's revisions
+
 - 🔍 Search and filtering
 - 🔐 User authentication
 
@@ -76,16 +76,17 @@ uvicorn main:app --reload
 - [x] Project setup
 - [x] Collection management
 - [x] Resource management
-- [ ] Confidence rating system
-- [ ] Revision scheduler
-- [ ] Dashboard
+- [x] Confidence rating system
+- [x] Revision scheduler
+- [x] Dashboard
+- [x] Search 
 - [ ] User authentication
 
 ---
 
 ## 🎯 Vision
 
-The goal of My Tracker is to simplify learning by providing a centralized platform to organize resources and, in future versions, help users revise them systematically.
+The goal of My Tracker is to simplify learning by providing a centralized platform to organize resources and help users revise them systematically.
 
 ---
 
