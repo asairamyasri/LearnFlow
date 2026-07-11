@@ -79,7 +79,7 @@ uvicorn main:app --reload
 - [x] Confidence rating system
 - [x] Revision scheduler
 - [x] Dashboard
-- [x] Search 
+- [ ] Search 
 - [ ] User authentication
 
 ---
