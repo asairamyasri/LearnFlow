@@ -127,7 +127,14 @@ function CollectionPage() {
 
                 <button
                     className="add-btn"
-                    onClick={() => setShowForm(true)}
+                    onClick={() => {
+                        setEditingId(null);
+                        setResourceName("");
+                        setWebsiteName("");
+                        setUrl("");
+                        setConfidence(3);
+                        setShowForm(true);
+                    }}
                 >
                     + Add Resource
                 </button>
@@ -233,7 +240,12 @@ function CollectionPage() {
 
                             <div className="action-buttons">
 
-
+                                <button
+                                    className="edit-btn"
+                                    onClick={() => handleEdit(resource)}
+                                >
+                                    ✏️
+                                </button>
 
                                 <button
                                     className="delete-btn"

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-
+from datetime import date
 
 # ---------- Collection Schemas ----------
 
@@ -22,10 +22,11 @@ class ResourceCreate(BaseModel):
     website: str
     url: str
     Confidence_rate: int = 3
+    
 
 
 class ResourceResponse(ResourceCreate):
     id: int
-
+    last_reviewed: date
     class Config:
         from_attributes = True

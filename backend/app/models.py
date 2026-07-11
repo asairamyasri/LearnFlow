@@ -1,7 +1,7 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from database import Base
-
+from datetime import date
 
 class Collection(Base):
     __tablename__ = "collections"
@@ -31,3 +31,4 @@ class Resource(Base):
     url = Column(String)
     Confidence_rate = Column(Integer , default=3)
     collection = relationship("Collection", back_populates="resources")
+    last_reviewed = Column(Date , default=date.today)

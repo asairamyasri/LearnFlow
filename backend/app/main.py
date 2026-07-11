@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-
+from datetime import date,timedelta
 from database import SessionLocal, engine
 from models import Base, Collection, Resource
 from schemas import (
@@ -119,6 +119,7 @@ def add_resource(
         website=resource.website,
         url=resource.url,
         Confidence_rate=resource.Confidence_rate,
+        last_reviewed=date.today(),
     )
 
     db.add(new_resource)
@@ -147,8 +148,8 @@ def update_resource(
     existing_resource.name = resource.name
     existing_resource.website = resource.website
     existing_resource.url = resource.url
-    existing_resource.confidence = resource.confidence
-
+    existing_resource.Confidence_rate= resource.Confidence_rate
+    existing_resource.last_reviewed = date.today()
     db.commit()
     db.refresh(existing_resource)
 
@@ -173,3 +174,28 @@ def delete_resource(
     db.commit()
 
     return {"message": "Resource deleted successfully"}
+@app.get("/dashboard", response_model=list[ResourceResponse])
+def get_dashboard(
+    db: Session = Depends(get_db),
+):
+    resources = db.query(Resource).all()
+
+    due_resources = []
+
+    today = date.today()
+
+    for resource in resources:
+
+        if resource.Confidence_rate == 1:
+            days = 0
+        elif resource.Confidence_rate == 2:
+            days = 3
+        else:
+            days = 7
+
+        next_review = resource.last_reviewed + timedelta(days=days)
+
+        if today >= next_review:
+            due_resources.append(resource)
+
+    return due_resources
