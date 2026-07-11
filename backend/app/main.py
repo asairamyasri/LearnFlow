@@ -73,6 +73,27 @@ def add_collection(
     db.refresh(new_collection)
 
     return new_collection
+@app.put("/collections/{collection_id}", response_model=CollectionResponse)
+def update_collection(
+    collection_id: int,
+    collection: CollectionCreate,
+    db: Session = Depends(get_db),
+):
+    existing_collection = (
+        db.query(Collection)
+        .filter(Collection.id == collection_id)
+        .first()
+    )
+
+    if not existing_collection:
+        raise HTTPException(status_code=404, detail="Collection not found")
+
+    existing_collection.name = collection.name
+
+    db.commit()
+    db.refresh(existing_collection)
+
+    return existing_collection
 @app.delete("/collections/{collection_id}")
 def delete_collection(
     collection_id: int,

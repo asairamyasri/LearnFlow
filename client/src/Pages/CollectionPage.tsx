@@ -113,7 +113,7 @@ function CollectionPage() {
 
             <button
                 className="back-btn"
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/collections")}
             >
                 ← Back
             </button>

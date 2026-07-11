@@ -4,6 +4,7 @@ type CollectionCardProps = {
     name: string;
     onDelete: () => void;
     onOpen: () => void;
+    onEdit: () => void;
 };
 
 function CollectionCard(props: CollectionCardProps) {
@@ -25,6 +26,17 @@ function CollectionCard(props: CollectionCardProps) {
                 </div>
 
             </div>
+
+            <button
+                className="edit-btn"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    console.log("EDIT BUTTON CLICKED");
+                    props.onEdit();
+                }}
+            >
+                ✏️
+            </button>
 
             <button
                 className="delete-btn"
