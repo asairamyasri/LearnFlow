@@ -364,7 +364,7 @@ def get_dashboard(
     for resource in resources:
 
         if resource.Confidence_rate == 1:
-            days = 0
+            days = 1
         elif resource.Confidence_rate == 2:
             days = 3
         else:
