@@ -76,6 +76,10 @@
     color: white;
 }
 
+.folder-box svg {
+    font-size: 22px;
+}
+
 /* Delete button */
 .delete-btn {
     background: #fff1f2;

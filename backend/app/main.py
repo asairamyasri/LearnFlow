@@ -3,14 +3,22 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from datetime import date,timedelta
 from database import SessionLocal, engine
-from models import Base, Collection, Resource
+from models import Base, Collection, Resource, User
+from auth import (
+    hash_password,
+    verify_password,
+    create_access_token,
+    get_current_user,
+)
 from schemas import (
+    UserCreate,
+    UserLogin,
+    UserResponse,
     CollectionCreate,
     CollectionResponse,
     ResourceCreate,
     ResourceResponse,
 )
-
 app = FastAPI()
 
 # Create database and tables
@@ -34,19 +42,89 @@ def get_db():
     finally:
         db.close()
 
+@app.post("/register", response_model=UserResponse)
+def register(
+    user: UserCreate,
+    db: Session = Depends(get_db),
+):
+    existing_email = db.query(User).filter(User.email == user.email).first()
+    if existing_email:
+        raise HTTPException(status_code=400, detail="Email already registered")
 
+    existing_username = db.query(User).filter(User.username == user.username).first()
+
+    if existing_username:
+        raise HTTPException(
+        status_code=400,
+        detail="Username already taken",
+    )
+
+    new_user = User(
+    username=user.username,
+    email=user.email,
+    hashed_password=hash_password(user.password),
+)
+
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    return new_user
+@app.post("/login")
+def login(
+    user: UserLogin,
+    db: Session = Depends(get_db),
+):
+    existing_user = (
+        db.query(User)
+        .filter(User.email == user.email)
+        .first()
+    )
+
+    if not existing_user:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid email or password"
+        )
+
+    if not verify_password(
+        user.password,
+        existing_user.hashed_password,
+    ):
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid email or password"
+        )
+
+    token = create_access_token(
+        {"sub": existing_user.email}
+    )
+
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+    }
 # ----------------------------
 # COLLECTION APIs
 # ----------------------------
 
-@app.get("/collections", response_model=list[CollectionResponse])
-def get_collections(db: Session = Depends(get_db)):
-    return db.query(Collection).all()
 
+
+@app.get("/collections", response_model=list[CollectionResponse])
+def get_collections(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return (
+        db.query(Collection)
+        .filter(Collection.user_id == current_user.id)
+        .all()
+    )
 
 @app.get("/collections/{collection_id}", response_model=CollectionResponse)
 def get_collection(
     collection_id: int,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     collection = (
@@ -56,17 +134,28 @@ def get_collection(
     )
 
     if not collection:
-        raise HTTPException(status_code=404, detail="Collection not found")
+        raise HTTPException(
+            status_code=404,
+            detail="Collection not found",
+        )
+
+    if collection.user_id != current_user.id:
+        raise HTTPException(
+            status_code=403,
+            detail="Not authorized",
+        )
 
     return collection
-
-
 @app.post("/collections", response_model=CollectionResponse)
 def add_collection(
     collection: CollectionCreate,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    new_collection = Collection(name=collection.name)
+    new_collection = Collection(
+        name=collection.name,
+        user_id=current_user.id,
+    )
 
     db.add(new_collection)
     db.commit()
@@ -77,6 +166,7 @@ def add_collection(
 def update_collection(
     collection_id: int,
     collection: CollectionCreate,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     existing_collection = (
@@ -87,6 +177,11 @@ def update_collection(
 
     if not existing_collection:
         raise HTTPException(status_code=404, detail="Collection not found")
+    if existing_collection.user_id != current_user.id:
+        raise HTTPException(
+            status_code=403,
+            detail="Not authorized",
+        )
 
     existing_collection.name = collection.name
 
@@ -97,6 +192,7 @@ def update_collection(
 @app.delete("/collections/{collection_id}")
 def delete_collection(
     collection_id: int,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     collection = (
@@ -107,7 +203,11 @@ def delete_collection(
 
     if not collection:
         raise HTTPException(status_code=404, detail="Collection not found")
-
+    if collection.user_id != current_user.id:
+        raise HTTPException(
+            status_code=403,
+            detail="Not authorized",
+        )
     db.delete(collection)
     db.commit()
 
@@ -120,8 +220,20 @@ def delete_collection(
 @app.get("/resources/{collection_id}", response_model=list[ResourceResponse])
 def get_resources(
     collection_id: int,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    collection = (
+    db.query(Collection)
+    .filter(Collection.id == collection_id)
+    .first()
+)
+
+    if not collection or collection.user_id != current_user.id:
+        raise HTTPException(
+        status_code=403,
+        detail="Not authorized",
+    )
     return (
         db.query(Resource)
         .filter(Resource.collection_id == collection_id)
@@ -133,7 +245,19 @@ def get_resources(
 def add_resource(
     resource: ResourceCreate,
     db: Session = Depends(get_db),
-):
+    current_user: User = Depends(get_current_user),
+):  
+    collection = (
+    db.query(Collection)
+    .filter(Collection.id == resource.collection_id)
+    .first()
+)
+
+    if not collection or collection.user_id != current_user.id:
+        raise HTTPException(
+        status_code=403,
+        detail="Not authorized",
+    )
     new_resource = Resource(
         collection_id=resource.collection_id,
         name=resource.name,
@@ -146,7 +270,7 @@ def add_resource(
     db.add(new_resource)
     db.commit()
     db.refresh(new_resource)
-
+    
     return new_resource
 
 
@@ -155,6 +279,7 @@ def update_resource(
     resource_id: int,
     resource: ResourceCreate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     existing_resource = (
         db.query(Resource)
@@ -164,7 +289,17 @@ def update_resource(
 
     if not existing_resource:
         raise HTTPException(status_code=404, detail="Resource not found")
+    collection = (
+    db.query(Collection)
+    .filter(Collection.id == existing_resource.collection_id)
+    .first()
+)
 
+    if collection.user_id != current_user.id:
+        raise HTTPException(
+        status_code=403,
+        detail="Not authorized",
+    )
     existing_resource.collection_id = resource.collection_id
     existing_resource.name = resource.name
     existing_resource.website = resource.website
@@ -181,6 +316,7 @@ def update_resource(
 def delete_resource(
     resource_id: int,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     resource = (
         db.query(Resource)
@@ -190,17 +326,37 @@ def delete_resource(
 
     if not resource:
         raise HTTPException(status_code=404, detail="Resource not found")
+    collection = (
+    db.query(Collection)
+    .filter(Collection.id == resource.collection_id)
+    .first()
+)
 
+    if collection.user_id != current_user.id:
+        raise HTTPException(
+        status_code=403,
+        detail="Not authorized",
+    )
     db.delete(resource)
     db.commit()
 
     return {"message": "Resource deleted successfully"}
 @app.get("/dashboard", response_model=list[ResourceResponse])
 def get_dashboard(
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    resources = db.query(Resource).all()
+    collections = (
+    db.query(Collection)
+    .filter(Collection.user_id == current_user.id)
+    .all()
+)
 
+    resources = []
+
+    for collection in collections:
+        resources.extend(collection.resources)
+    
     due_resources = []
 
     today = date.today()

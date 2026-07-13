@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-
-
+import { useNavigate } from "react-router-dom";
 
 type Resource = {
     id: number;
@@ -13,32 +12,46 @@ type Resource = {
 };
 
 function Dashboard() {
-
+    const navigate = useNavigate();
+    const token = localStorage.getItem("token");
 
     const [resources, setResources] = useState<Resource[]>([]);
 
     async function loadDashboard() {
         const response = await fetch(
-            "http://127.0.0.1:8000/dashboard"
+            "http://127.0.0.1:8000/dashboard",
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
         );
 
-        const data = await response.json();
+        if (response.status === 401) {
+            localStorage.removeItem("token");
+            navigate("/login");
+            return;
+        }
 
+        const data = await response.json();
         setResources(data);
     }
 
     useEffect(() => {
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+
         loadDashboard();
     }, []);
 
     return (
         <div className="dashboard-page">
 
-
-
             <div className="page-header">
                 <div>
-                    <h1>📅 Dashboard</h1>
+                    <h1>Dashboard</h1>
                     <p>Resources to revise today</p>
                 </div>
             </div>
@@ -57,17 +70,21 @@ function Dashboard() {
                             className="resource-card"
                         >
 
-                            <div className="resource-top">
+                            <div className="resource-header">
 
-                                <h3>{resource.name}</h3>
+                                <div className="resource-info">
 
-                                <span className="website-badge">
-                                    {resource.website}
-                                </span>
+                                    <h3>{resource.name}</h3>
 
-                                <p>
+                                    <span className="website-badge">
+                                        {resource.website}
+                                    </span>
+
+                                </div>
+
+                                <div className="resource-rating">
                                     {"⭐".repeat(resource.Confidence_rate)}
-                                </p>
+                                </div>
 
                             </div>
 

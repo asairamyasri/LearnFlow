@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./collpage.css";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
+import { FaStar, FaRegStar } from "react-icons/fa";
 type Resource = {
     id: number;
     collection_id: number;
@@ -13,6 +15,7 @@ type Resource = {
 function CollectionPage() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const token = localStorage.getItem("token");
     const [showForm, setShowForm] = useState(false);
 
     const [resourceName, setResourceName] = useState("");
@@ -25,7 +28,12 @@ function CollectionPage() {
 
     async function loadResources() {
         const response = await fetch(
-            `http://127.0.0.1:8000/resources/${id}`
+            `http://127.0.0.1:8000/resources/${id}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
         );
 
         const data = await response.json();
@@ -34,19 +42,39 @@ function CollectionPage() {
     }
 
     useEffect(() => {
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+
         loadResources();
 
-        fetch(`http://127.0.0.1:8000/collections/${id}`)
+        fetch(`http://127.0.0.1:8000/collections/${id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        })
             .then((response) => response.json())
             .then((data) => setCollectionName(data.name));
     }, [id]);
 
     async function handleSave() {
+        if (resourceName.trim() === "") {
+            alert("Resource name cannot be empty!");
+            return;
+        }
+
+        if (url.trim() === "") {
+            alert("Resource link is required!");
+            return;
+        }
         if (editingId === null) {
             await fetch("http://127.0.0.1:8000/resources", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     collection_id: Number(id),
@@ -63,6 +91,7 @@ function CollectionPage() {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify({
                         collection_id: Number(id),
@@ -87,10 +116,17 @@ function CollectionPage() {
     }
 
     async function handleDelete(resourceId: number) {
+        const confirmDelete = window.confirm(
+            "Are you sure you want to delete this resource?"
+        );
+        if (!confirmDelete) { return; }
         await fetch(
             `http://127.0.0.1:8000/resources/${resourceId}`,
             {
                 method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
         );
 
@@ -115,13 +151,13 @@ function CollectionPage() {
                 className="back-btn"
                 onClick={() => navigate("/collections")}
             >
-                ← Back
+                ← Back to Collections
             </button>
 
             <div className="page-header">
 
                 <div>
-                    <h1>📚 {collectionName}</h1>
+                    <h1>{collectionName}</h1>
                     <p>{resources.length} Resources</p>
                 </div>
 
@@ -175,22 +211,43 @@ function CollectionPage() {
                     />
 
 
-                    <select
-                        value={confidence}
-                        onChange={(e) => setConfidence(Number(e.target.value))}
-                    >
-                        <option value={1}>⭐</option>
-                        <option value={2}>⭐⭐</option>
-                        <option value={3}>⭐⭐⭐</option>
-                    </select>
+                    <div className="rating-picker">
+                        {[1, 2, 3].map((star) => (
+                            <button
+                                key={star}
+                                type="button"
+                                className="star-btn"
+                                onClick={() => setConfidence(star)}
+                            >
+                                {confidence >= star ? <FaStar /> : <FaRegStar />}
+                            </button>
+                        ))}
+                    </div>
 
+                    <div className="form-buttons">
 
-                    <button
-                        className="save-btn"
-                        onClick={handleSave}
-                    >
-                        {editingId !== null ? "Update" : "Save"}
-                    </button>
+                        <button
+                            className="cancel-btn"
+                            onClick={() => {
+                                setShowForm(false);
+                                setEditingId(null);
+                                setResourceName("");
+                                setWebsiteName("");
+                                setUrl("");
+                                setConfidence(3);
+                            }}
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            className="save-btn"
+                            onClick={handleSave}
+                        >
+                            {editingId !== null ? "Update" : "Save"}
+                        </button>
+
+                    </div>
 
                 </div>
             )}
@@ -203,18 +260,21 @@ function CollectionPage() {
                         className="resource-card"
                         key={resource.id}
                     >
+                        <div className="resource-header">
 
-                        <div className="resource-top">
+                            <div className="resource-info">
 
-                            <h3>{resource.name}</h3>
+                                <h3>{resource.name}</h3>
 
-                            <span className="website-badge">
-                                {resource.website}
-                            </span>
+                                <span className="website-badge">
+                                    {resource.website}
+                                </span>
 
-                            <p>
+                            </div>
+
+                            <div className="resource-rating">
                                 {"⭐".repeat(resource.Confidence_rate)}
-                            </p>
+                            </div>
 
                         </div>
 
@@ -226,6 +286,8 @@ function CollectionPage() {
                         >
                             {resource.url}
                         </a>
+
+
 
                         <div className="resource-actions">
 
@@ -244,14 +306,14 @@ function CollectionPage() {
                                     className="edit-btn"
                                     onClick={() => handleEdit(resource)}
                                 >
-                                    ✏️
+                                    <FiEdit2 />
                                 </button>
 
                                 <button
                                     className="delete-btn"
                                     onClick={() => handleDelete(resource.id)}
                                 >
-                                    🗑
+                                    <FiTrash2 />
                                 </button>
 
                             </div>

@@ -2,12 +2,34 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from database import Base
 from datetime import date
+class User(Base):
+    __tablename__ = "users"
 
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True)
+    email = Column(String, unique=True, index=True)
+    hashed_password = Column(String)
+
+    collections = relationship(
+        "Collection",
+        back_populates="user",
+        cascade="all, delete-orphan"
+    )
 class Collection(Base):
     __tablename__ = "collections"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, index=True)
+
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE")
+    )
+
+    user = relationship(
+        "User",
+        back_populates="collections"
+    )
 
     resources = relationship(
         "Resource",

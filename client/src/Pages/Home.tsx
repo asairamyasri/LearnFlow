@@ -11,6 +11,7 @@ type Collection = {
 const API_URL = "http://127.0.0.1:8000";
 
 function Home() {
+    const token = localStorage.getItem("token");
     const [collections, setCollections] = useState<Collection[]>([]);
     const [newCollection, setNewCollection] = useState("");
 
@@ -21,13 +22,23 @@ function Home() {
 
 
     const loadCollections = async () => {
-        const response = await fetch(`${API_URL}/collections`);
+        const response = await fetch(`${API_URL}/collections`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
         const data = await response.json();
         setCollections(data);
     };
 
 
     useEffect(() => {
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+
         loadCollections();
     }, []);
 
@@ -57,6 +68,7 @@ function Home() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
                 name: newCollection.trim(),
@@ -84,6 +96,7 @@ function Home() {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     name: editName.trim(),
@@ -163,82 +176,32 @@ function Home() {
                         <div key={collection.id}>
 
 
-                            {editId === collection.id ? (
+                            <CollectionCard
+                                name={collection.name}
+                                onOpen={() => navigate(`/collection/${collection.id}`)}
+                                onEdit={() => {
+                                    setEditId(collection.id);
+                                    setEditName(collection.name);
+                                }}
+                                onDelete={async () => {
+                                    const confirmDelete = window.confirm(
+                                        "Are you sure you want to delete this collection?"
+                                    );
 
-                                <div className="edit-box">
+                                    if (!confirmDelete) return;
 
-                                    <input
-                                        value={editName}
-                                        onChange={(e) =>
-                                            setEditName(e.target.value)
-                                        }
-                                    />
+                                    await fetch(`${API_URL}/collections/${collection.id}`, {
+                                        method: "DELETE",
+                                        headers: {
+                                            Authorization: `Bearer ${token}`,
+                                        },
+                                    });
 
-
-                                    <button
-                                        onClick={updateCollection}
-                                    >
-                                        Save
-                                    </button>
-
-
-                                    <button
-                                        onClick={() => {
-                                            setEditId(null);
-                                            setEditName("");
-                                        }}
-                                    >
-                                        Cancel
-                                    </button>
-
-                                </div>
-
-
-                            ) : (
-
-                                <CollectionCard
-
-                                    name={collection.name}
-
-
-                                    onOpen={() =>
-                                        navigate(
-                                            `/collection/${collection.id}`
-                                        )
-                                    }
-
-
-                                    onEdit={() => {
-
-                                        setEditId(collection.id);
-                                        setEditName(collection.name);
-
-                                    }}
-
-
-                                    onDelete={async () => {
-
-
-                                        await fetch(
-                                            `${API_URL}/collections/${collection.id}`,
-                                            {
-                                                method: "DELETE",
-                                            }
-                                        );
-
-
-                                        setCollections((prev) =>
-                                            prev.filter(
-                                                (c) =>
-                                                    c.id !== collection.id
-                                            )
-                                        );
-
-                                    }}
-
-                                />
-
-                            )}
+                                    setCollections(prev =>
+                                        prev.filter(c => c.id !== collection.id)
+                                    );
+                                }}
+                            />
 
                         </div>
 
@@ -249,7 +212,45 @@ function Home() {
 
 
             </section>
+            {editId !== null && (
+                <div className="modal-overlay">
 
+                    <div className="edit-modal">
+
+                        <h2>Edit Collection</h2>
+
+                        <p>Update the collection name.</p>
+
+                        <input
+                            value={editName}
+                            onChange={(e) => setEditName(e.target.value)}
+                        />
+
+                        <div className="modal-buttons">
+
+                            <button
+                                className="cancel-btn"
+                                onClick={() => {
+                                    setEditId(null);
+                                    setEditName("");
+                                }}
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                className="save-btn"
+                                onClick={updateCollection}
+                            >
+                                Save Changes
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            )}
         </>
     );
 }

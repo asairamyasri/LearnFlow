@@ -7,18 +7,60 @@
 }
 
 .back-btn {
-    background: transparent;
-    border: none;
-    color: #6d5cff;
-    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    background: white;
+    color: #374151;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+
+    padding: 12px 18px;
+
+    font-size: 15px;
     font-weight: 600;
+
     cursor: pointer;
-    margin-bottom: 25px;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .05);
+
     transition: .25s;
+
+    margin-bottom: 30px;
 }
 
 .back-btn:hover {
-    color: #5547e6;
+    background: #6d5cff;
+    color: white;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 10px 20px rgba(109, 92, 255, .25);
+}
+
+.edit-btn svg,
+.delete-btn svg {
+    font-size: 22px;
+}
+
+.rating-picker {
+    display: flex;
+    gap: 10px;
+}
+
+.star-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 28px;
+    color: #fbbf24;
+    padding: 0;
+}
+
+.star-btn:hover {
+    transform: scale(1.1);
 }
 
 /* ================= Header ================= */
@@ -115,10 +157,30 @@
     box-shadow: 0 18px 40px rgba(0, 0, 0, .08);
 }
 
-.resource-top {
+.resource-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 16px;
+}
+
+.resource-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.resource-info h3 {
+    font-size: 24px;
+    color: #111827;
+    margin: 0;
+    font-size: 22px;
+    margin-bottom: 4px;
+}
+
+.resource-rating {
+    font-size: 20px;
+    white-space: nowrap;
 }
 
 .resource-top h3 {
@@ -129,22 +191,39 @@
 /* ================= Badge ================= */
 
 .website-badge {
-    background: #f2efff;
+
+    display: inline-flex;
+    align-self: flex-start;
+
+    background: #f3f0ff;
     color: #6d5cff;
-    padding: 7px 14px;
-    border-radius: 20px;
+
+    padding: 6px 12px;
+
+    border-radius: 999px;
     font-size: 13px;
+    padding: 7px 14px;
     font-weight: 600;
 }
 
 /* ================= URL ================= */
 
 .resource-link {
+
     display: block;
-    margin: 18px 0;
+
+    margin-top: 8px;
+    margin-bottom: 16px;
+
     color: #64748b;
+
     text-decoration: none;
-    word-break: break-all;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+    word-break: break-word;
 }
 
 .resource-link:hover {
@@ -176,6 +255,7 @@
 .action-buttons {
     display: flex;
     align-items: center;
+    gap: 10px;
 }
 
 .delete-btn {
@@ -204,4 +284,27 @@
 .delete-btn:hover {
     background: #ef4444;
     color: white;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.cancel-btn {
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    border-radius: 14px;
+    padding: 15px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.cancel-btn:hover {
+    background: #e5e7eb;
 }
