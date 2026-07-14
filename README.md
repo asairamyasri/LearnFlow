@@ -20,23 +20,23 @@ The project is designed to make self-learning more organized, consistent, and ef
 
 ### Login
 
-![Login](client/src/public/login.jpeg)
+![Login](client/public/login.jpeg)
 
 ### Register
 
-![Register](client/src/public/register.jpeg)
+![Register](client/public/register.jpeg)
 
 ### Dashboard
 
-![Dashboard](client/src/public/dashboard.jpeg)
+![Dashboard](client/public/dashboard.jpeg)
 
 ### Collections
 
-![Collections](client/src/public/collections.jpeg)
+![Collections](client/public/collections.jpeg)
 
 ### Resources
 
-![Resources](client/src/public/resource.jpeg)
+![Resources](client/public/resource.jpeg)
 
 ---
 
