@@ -4,8 +4,8 @@ from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-from database import SessionLocal
-from models import User
+from app.database import SessionLocal
+from app.models import User
 pwd_context = CryptContext(
     schemes=["bcrypt"],
     deprecated="auto"
