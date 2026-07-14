@@ -208,17 +208,7 @@ LearnFlow addresses this by providing a centralized platform where users can org
 
 ---
 
-# 🎯 Future Scope
 
-- PostgreSQL support
-- Docker deployment
-- Cloud file storage
-- Email reminders
-- AI-generated flashcards
-- AI learning recommendations
-- Mobile application
-
----
 
 # 👩‍💻 Author
 
