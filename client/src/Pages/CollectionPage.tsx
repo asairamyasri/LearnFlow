@@ -28,7 +28,7 @@ function CollectionPage() {
 
     async function loadResources() {
         const response = await fetch(
-            `http://127.0.0.1:8000/resources/${id}`,
+            `https://learnflow-bos1.onrender.com/resources/${id}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -49,7 +49,7 @@ function CollectionPage() {
 
         loadResources();
 
-        fetch(`http://127.0.0.1:8000/collections/${id}`, {
+        fetch(`https://learnflow-bos1.onrender.com/collections/${id}`, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
@@ -70,7 +70,7 @@ function CollectionPage() {
             return;
         }
         if (editingId === null) {
-            await fetch("http://127.0.0.1:8000/resources", {
+            await fetch("https://learnflow-bos1.onrender.com/resources", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -86,7 +86,7 @@ function CollectionPage() {
             });
         } else {
             await fetch(
-                `http://127.0.0.1:8000/resources/${editingId}`,
+                `https://learnflow-bos1.onrender.com/resources/${editingId}`,
                 {
                     method: "PUT",
                     headers: {
@@ -121,7 +121,7 @@ function CollectionPage() {
         );
         if (!confirmDelete) { return; }
         await fetch(
-            `http://127.0.0.1:8000/resources/${resourceId}`,
+            `https://learnflow-bos1.onrender.com/resources/${resourceId}`,
             {
                 method: "DELETE",
                 headers: {

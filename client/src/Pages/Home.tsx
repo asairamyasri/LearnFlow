@@ -8,7 +8,7 @@ type Collection = {
     name: string;
 };
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://learnflow-bos1.onrender.com";
 
 function Home() {
     const token = localStorage.getItem("token");

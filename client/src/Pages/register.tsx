@@ -6,7 +6,7 @@ import {
     FiLayers,
 
 } from "react-icons/fi";
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://learnflow-bos1.onrender.com";
 
 function Register() {
     const navigate = useNavigate();
