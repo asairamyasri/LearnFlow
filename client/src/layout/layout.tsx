@@ -1,10 +1,10 @@
 import "../App.css";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
-    FiBookOpen,
+
     FiGrid,
     FiFolder,
-    FiStar,
+
     FiLogOut,
     FiLayers,
 
