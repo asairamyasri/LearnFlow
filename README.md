@@ -56,15 +56,7 @@ The project is designed to make self-learning more organized, consistent, and ef
 
 ---
 
-## 🚧 Planned Features
 
-- 🔍 Search and filtering
-- 📄 PDF uploads
-- 🖼️ Image uploads
-- 📈 Learning analytics and progress charts
-- 🤖 AI-generated summaries
-- 📝 Flashcard generation
-- 📅 Calendar-based revision planner
 
 ---
 
